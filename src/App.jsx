@@ -3,10 +3,8 @@ import {
   User, Play, Menu, Home, Contact, 
   Heart, Settings, LogOut, Search, 
   PlayCircle, Music, Mic, Clock, Bell, 
-  ImageIcon, ChevronDown, ChevronRight,
-  Pause, RotateCcw, SkipBack, SkipForward,
-  CreditCard, BookOpen, BarChart3, Radio,
-  Youtube
+  ImageIcon, Pause, RotateCcw, SkipBack, SkipForward,
+  CreditCard, BookOpen, BarChart3, Radio, Youtube
 } from 'lucide-react';
 
 const MUSIC_URL = "https://upcdn.io/223k2d3/raw/%E3%80%9030%E5%88%86%E8%80%90%E4%B9%85%E3%83%95%E3%83%AA%E3%83%BCBGM%E3%80%91303%20PM%20_%20%E3%81%97%E3%82%83%E3%82%8D%E3%81%86%E3%80%90%E5%85%AC%E5%BC%8F%E3%80%91%20-%20%E3%81%97%E3%82%83%E3%82%8D%E3%81%86%20Sharou.mp3";
@@ -93,6 +91,7 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
   const [isCardExpanded, setIsCardExpanded] = useState(false);
   const cardRef = useRef(null);
   const progressBarRef = useRef(null);
+  const videoRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -125,7 +124,7 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
           <div className="bg-white rounded-[32px] md:rounded-[40px] p-6 md:p-10 relative shadow-sm h-48 md:h-64 flex flex-col justify-center overflow-hidden group cursor-pointer transition-all duration-500 hover:shadow-2xl hover:shadow-[#3E3B53]/10">
             <div className="w-2/3 md:w-1/2 z-10 relative transition-transform duration-500 group-hover:translate-x-2">
               <div className="text-gray-400 text-[10px] md:text-xs mb-1 font-bold">Project Sekai</div>
-              <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold text-[#3E3B53] leading-tight mb-4 md:mb-6">Welcome!<br/>to our band Leo-need!!!</h1>
+              <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold text-[#3E3B53] leading-tight mb-4 md:mb-6 italic">Welcome!<br/>to our band Leo-need!!!</h1>
               <button className="bg-[#65637B] hover:bg-[#3E3B53] text-white px-4 md:px-6 py-1.5 md:py-2 rounded-full text-[10px] md:text-xs font-bold flex items-center space-x-3 transition-all active:scale-95 shadow-lg">
                 <span>Play Now</span><PlayCircle size={14} fill="white" />
               </button>
@@ -153,44 +152,40 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
             </div>
           </div>
 
-          <div>
-            <div className="flex items-center space-x-2 mb-4 px-1"><BarChart3 size={18} className="text-[#3E3B53]" /><h2 className="text-[#3E3B53] font-bold text-sm md:text-base">Learning Progress</h2></div>
-            <div className="bg-white rounded-[24px] md:rounded-[32px] p-6 md:p-8 shadow-sm flex items-center justify-between group cursor-pointer hover:shadow-md transition-all duration-500">
-              <div className="flex-1 mr-6 md:mr-12">
-                <div className="text-[10px] md:text-xs text-gray-400 font-bold mb-3 md:mb-4 uppercase tracking-wider">Overall Progress</div>
-                <div className="w-full bg-[#F3F5FA] h-2 md:h-3 rounded-full overflow-hidden">
-                  <div className="bg-[#595A72] w-[65%] h-full rounded-full transition-all duration-700 group-hover:bg-[#3E3B53] group-hover:w-[75%]"></div>
-                </div>
+          <div className="bg-white rounded-[24px] md:rounded-[32px] p-6 md:p-8 shadow-sm flex items-center justify-between group cursor-pointer hover:shadow-md transition-all duration-500">
+            <div className="flex-1 mr-6 md:mr-12">
+              <div className="text-[10px] md:text-xs text-gray-400 font-bold mb-3 md:mb-4 uppercase tracking-wider">Overall Progress</div>
+              <div className="w-full bg-[#F3F5FA] h-2 md:h-3 rounded-full overflow-hidden">
+                <div className="bg-[#595A72] w-[65%] h-full rounded-full transition-all duration-700 group-hover:bg-[#3E3B53]"></div>
               </div>
-              <div className="text-2xl md:text-4xl font-black text-[#3E3B53] transition-transform group-hover:scale-110">65%</div>
             </div>
+            <div className="text-2xl md:text-4xl font-black text-[#3E3B53]">65%</div>
           </div>
         </div>
 
         {/* Right Column */}
         <div className="md:col-span-4 flex flex-col gap-6 md:gap-8">
-          {/* Collection Section */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2 px-1"><CreditCard size={16} className="text-[#3E3B53]" /><h2 className="text-[#3E3B53] font-bold text-sm">Collection Cards</h2></div>
+            <div className="flex items-center space-x-2 px-1"><CreditCard size={16} className="text-[#3E3B53]" /><h2 className="text-[#3E3B53] font-bold text-sm">Collection Card</h2></div>
             
-            {/* Box Birthday Card (Expanded) */}
+            {/* Card Birthday - Mở rộng mượt mà */}
             <div ref={cardRef} onClick={() => setIsCardExpanded(!isCardExpanded)} className={`bg-white rounded-[24px] shadow-sm overflow-hidden transition-all duration-500 cursor-pointer ${isCardExpanded ? 'shadow-xl' : 'hover:shadow-lg hover:-translate-y-1'}`}>
               <div className="p-5 flex justify-between items-center">
                 <div className="flex-1">
-                  <div className="text-[#3E3B53] text-[13px] font-bold uppercase">Birthday Card</div>
-                  <div className="text-gray-400 text-[10px] mt-1 italic">all ways jump! with you</div>
+                  <div className="text-[#3E3B53] text-[13px] font-bold uppercase tracking-tight">Birthday Card</div>
+                  <div className="text-gray-400 text-[10px] leading-tight mt-1 italic">all ways jump! with you</div>
                 </div>
-                <div className="w-14 h-14 rounded-2xl bg-blue-50 overflow-hidden ml-3"><img src="https://i.ibb.co/Lz0Y8Y0/Card-Ichika-Birthday.png" alt="Card" className="w-full h-full object-cover" /></div>
+                <div className="w-14 h-14 rounded-2xl bg-blue-50 overflow-hidden ml-3 shadow-inner"><img src="https://i.ibb.co/Lz0Y8Y0/Card-Ichika-Birthday.png" alt="Card" className="w-full h-full object-cover" /></div>
               </div>
               <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isCardExpanded ? 'max-h-[400px] opacity-100' : 'max-h-0 opacity-0'}`}>
                 <div className="px-5 pb-5 pt-2 border-t border-gray-50 bg-gradient-to-b from-white to-[#F9FAFC]">
                   <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-md mb-4"><img src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=500&auto=format&fit=crop" className="w-full h-full object-cover" alt="Donate" /></div>
-                  <div className="text-center"><p className="text-[#3E3B53] text-[10px] font-bold opacity-80">✨ Support me ✨</p><div className="text-[9px] text-gray-400 mt-1 uppercase tracking-widest animate-pulse">donate me</div></div>
+                  <div className="text-center"><p className="text-[#3E3B53] text-[10px] font-bold opacity-80">✨ Support me ✨</p><div className="text-[9px] text-gray-400 font-medium mt-1 uppercase tracking-[0.2em] animate-pulse">donate me</div></div>
                 </div>
               </div>
             </div>
 
-            {/* Box Mới: Member Card (Chỉ Hover) */}
+            {/* Box Member - Chỉ Hover */}
             <div className="bg-white rounded-[24px] p-5 shadow-sm flex justify-between items-center cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all border border-transparent hover:border-[#DDE2EF]">
               <div className="flex-1">
                 <div className="text-[#3E3B53] text-[13px] font-bold uppercase">Member Card</div>
@@ -200,29 +195,26 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
             </div>
           </div>
 
-          {/* Updates & Player Section */}
           <div className="flex flex-col gap-6">
-            <div className="flex justify-between items-center px-1"><div className="flex items-center space-x-2"><Bell size={16} className="text-[#3E3B53]" /><h2 className="text-[#3E3B53] font-bold text-sm">Updates & Player</h2></div><button className="text-gray-400 text-[10px] font-bold">See all</button></div>
-            
             <div className="bg-white rounded-[32px] shadow-sm overflow-hidden border border-gray-50">
-              <div className="p-5 flex items-start space-x-4 cursor-pointer hover:bg-gray-50 border-b border-gray-50">
+              <div className="p-4 md:p-5 flex items-start space-x-4 cursor-pointer hover:bg-gray-50 border-b border-gray-50">
                  <div className="p-2 bg-[#F3F5FA] rounded-xl"><Clock size={16} className="text-gray-400" /></div>
                  <div className="flex-1"><div className="text-[#3E3B53] text-[11px] font-bold">Band practice starts soon</div><div className="text-gray-400 text-[9px] mt-1">Don't forget your guitar!</div></div>
               </div>
 
-              {/* Mini Player - FIX CĂN GIỮA NÚT */}
+              {/* Mini Player - FIXED NÚT CĂN GIỮA TÂM */}
               <div className="p-6 flex flex-col bg-white">
                 <div className="flex items-start space-x-4 mb-6">
                   <div className={`p-3 rounded-2xl transition-all duration-500 ${isPlaying ? 'bg-[#3E3B53] text-white shadow-lg animate-pulse' : 'bg-[#F3F5FA] text-gray-400'}`}><Radio size={20} /></div>
                   <div className="flex-1 min-w-0"><div className="text-[#3E3B53] text-sm font-bold truncate">303 PM</div><div className="text-gray-400 text-[11px] mt-0.5 truncate">Sharou (しゃろう)</div></div>
                 </div>
                 
-                {/* Nút bấm căn giữa */}
-                <div className="flex items-center justify-center space-x-6 md:space-x-8 mb-6">
+                {/* Khu vực nút điều khiển căn giữa tuyệt đối */}
+                <div className="flex items-center justify-center space-x-8 mb-6 w-full">
                   <button onClick={() => setIsLooping(!isLooping)} className={`transition-colors ${isLooping ? 'text-blue-500' : 'text-gray-300'}`}><RotateCcw size={16} /></button>
                   <button className="text-gray-400 hover:text-[#3E3B53]"><SkipBack size={20} fill="currentColor" /></button>
-                  <button onClick={togglePlay} className="w-12 h-12 flex items-center justify-center bg-[#3E3B53] text-white rounded-full hover:scale-110 active:scale-95 transition-all shadow-xl">
-                    {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-1" />}
+                  <button onClick={togglePlay} className="w-14 h-14 flex items-center justify-center bg-[#3E3B53] text-white rounded-full hover:scale-110 active:scale-95 transition-all shadow-xl">
+                    {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-1" />}
                   </button>
                   <button className="text-gray-400 hover:text-[#3E3B53]"><SkipForward size={20} fill="currentColor" /></button>
                 </div>
@@ -230,32 +222,27 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
                 <div className="relative group select-none">
                   <div className="flex justify-between text-[10px] font-mono text-gray-400 mb-2"><span>{formatTime(currentTime)}</span><span>{formatTime(duration)}</span></div>
                   <div ref={progressBarRef} onClick={handleBarClick} className="w-full h-2 bg-[#F3F5FA] rounded-full overflow-hidden cursor-pointer relative">
-                    <div className="h-full bg-[#3E3B53] transition-all duration-200 rounded-full relative" style={{ width: `${progress}%` }}>
-                      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-[#3E3B53] border-2 border-white rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
+                    <div className="h-full bg-[#3E3B53] transition-all duration-200" style={{ width: `${progress}%` }}></div>
                   </div>
                 </div>
               </div>
-
-              <div className="p-5 flex items-start space-x-4 cursor-pointer hover:bg-gray-50 border-t border-gray-50">
-                 <div className="p-2 bg-[#F3F5FA] rounded-xl"><ImageIcon size={16} className="text-gray-400" /></div>
-                 <div className="flex-1"><div className="text-[#3E3B53] text-[11px] font-bold">New Outfit Unlocked</div><div className="text-gray-400 text-[9px] mt-1">Check it out in the wardrobe!</div></div>
-              </div>
             </div>
 
-            {/* Box Video Mới: The Beginning of Something New */}
-            <div className="bg-white rounded-[24px] p-4 shadow-sm group cursor-pointer hover:shadow-xl transition-all duration-500 hover:-translate-y-1 border border-transparent hover:border-[#DDE2EF]">
-              <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-3">
-                <img src="https://i.ibb.co/3ykG2jY/ichika-video-bg.jpg" alt="Popular Video" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="bg-white/90 p-3 rounded-full text-[#3E3B53]"><Play size={20} fill="currentColor" /></div>
-                </div>
+            {/* Box Video - Có thể phát video trực tiếp */}
+            <div className="bg-white rounded-[24px] p-4 shadow-sm group border border-transparent hover:border-[#DDE2EF] transition-all">
+              <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-3 bg-black">
+                <video 
+                  ref={videoRef}
+                  className="w-full h-full object-cover cursor-pointer"
+                  src="https://www.w3schools.com/html/mov_bbb.mp4" 
+                  onClick={() => videoRef.current.paused ? videoRef.current.play() : videoRef.current.pause()}
+                />
               </div>
               <div className="px-1">
-                <div className="text-[#3E3B53] text-[13px] font-bold leading-tight group-hover:text-blue-600 transition-colors">The Beginning of Something New</div>
+                <div className="text-[#3E3B53] text-[13px] font-bold leading-tight">The Beginning of Something New</div>
                 <div className="flex items-center space-x-2 mt-1">
                   <Youtube size={12} className="text-red-500" />
-                  <span className="text-gray-400 text-[10px] font-medium">Most Popular Video</span>
+                  <span className="text-gray-400 text-[10px] font-medium uppercase tracking-tighter">Most Popular Video</span>
                 </div>
               </div>
             </div>
@@ -352,4 +339,4 @@ export default function App() {
       `}} />
     </div>
   );
-        } 
+} 
