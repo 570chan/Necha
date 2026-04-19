@@ -31,7 +31,7 @@ const AudioVisualizer = ({ isPlaying, progress, onSeek }) => {
               e.stopPropagation();
               onSeek(barThreshold);
             }}
-            className={`w-[2px] md:w-[3px] rounded-full transition-all duration-300 ease-out ${
+            className={`w-[2px] md:w-[3px] rounded-full transition-all duration-300 ease-out hover:scale-y-125 ${
               isActive ? 'bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]' : 'bg-white/20'
             }`}
             style={{ 
@@ -60,7 +60,8 @@ const TopNavBar = ({ isPlaying, progress, currentTime, duration, togglePlay, isV
 
     <div className="flex items-center space-x-2 md:space-x-6">
       <div className="flex items-center bg-black/20 rounded-full px-3 py-1.5 space-x-2 md:space-x-3">
-        <span className="text-[9px] md:text-[10px] font-mono w-16 md:w-24 text-center text-white/70">
+        {/* Fix rớt dòng thời gian ở đây */}
+        <span className="text-[9px] md:text-[10px] font-mono w-auto min-w-[70px] whitespace-nowrap text-center text-white/70">
           {formatTime(currentTime)} / {formatTime(duration)}
         </span>
         <AudioVisualizer isPlaying={isPlaying} progress={progress} onSeek={onSeek} />
@@ -83,11 +84,9 @@ const SideNavBar = ({ activeView, setActiveView }) => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 h-16 bg-[#DDE2EF] flex flex-row items-center justify-around px-4 shadow-lg z-40 md:left-6 md:top-24 md:bottom-6 md:w-16 md:h-auto md:flex-col md:py-8 md:rounded-full border border-white/20">
-      {/* Avatar - Luôn hiển thị trên cả mobile và desktop */}
       <div className="w-10 h-10 rounded-full bg-gray-400 overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:scale-110 transition-transform flex-shrink-0 md:mb-10">
-        <img src="https://i.ibb.co/5WVkbrNc/avatar.jpg " alt="Profile" className="w-full h-full object-cover" />
+        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=100&auto=format&fit=crop" alt="Profile" className="w-full h-full object-cover" />
       </div>
-      
       <div className="flex flex-row md:flex-1 md:flex-col space-x-4 sm:space-x-10 md:space-x-0 md:space-y-8">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -116,7 +115,7 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
   };
 
   return (
-    <div className="w-full md:ml-24 p-4 sm:p-6 md:p-8 max-w-[1400px] animate-in fade-in duration-700 pb-24 md:pb-8">
+    <div className="w-full md:ml-28 p-4 sm:p-6 md:p-8 max-w-[1400px] animate-in fade-in duration-700 pb-24 md:pb-8">
       <div className="flex justify-between items-end mb-6">
         <div className="text-gray-400 text-[10px] md:text-xs tracking-widest font-bold uppercase">
           Dashboard <span className="mx-2 text-gray-300">/</span> <span className="text-[#3E3B53]">Hoshino Ichika</span>
@@ -128,19 +127,18 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
       </div>
 
       <div className="relative w-full sm:w-2/3 md:w-1/2 mb-8">
-        <input type="text" placeholder="Search..." className="w-full bg-[#DDE2EF] text-[#3E3B53] placeholder-gray-400 rounded-2xl py-2.5 px-6 outline-none shadow-sm focus:ring-2 ring-[#3E3B53]/10 transition-all text-sm" />
+        <input type="text" placeholder="Search lessons, tracks..." className="w-full bg-[#DDE2EF] text-[#3E3B53] placeholder-gray-400 rounded-2xl py-2.5 px-6 outline-none shadow-sm focus:ring-2 ring-[#3E3B53]/10 transition-all text-sm" />
         <Search className="absolute right-5 top-2.5 text-gray-400" size={18} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
-        {/* Main Content */}
         <div className="md:col-span-8 flex flex-col gap-6 md:gap-8">
           <div className="bg-white rounded-[32px] md:rounded-[40px] p-6 md:p-10 relative shadow-sm h-48 md:h-64 flex flex-col justify-center overflow-hidden group">
             <div className="w-2/3 md:w-1/2 z-10 relative">
               <div className="text-gray-400 text-[10px] md:text-xs mb-1 font-bold">Project Sekai</div>
-              <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold text-[#3E3B53] leading-tight mb-4 md:mb-6">Welcome! to our<br/>band Leo-need!!!</h1>
+              <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold text-[#3E3B53] leading-tight mb-4 md:mb-6">Welcome!<br/>to our band Leo-need!!!</h1>
               <button className="bg-[#65637B] hover:bg-[#3E3B53] text-white px-4 md:px-6 py-1.5 md:py-2 rounded-full text-[10px] md:text-xs font-bold flex items-center space-x-3 transition-all active:scale-95 shadow-lg">
-                <span>Play Now</span><PlayCircle size={14} fill="white" />
+                <span>Play Now</span><PlayCircle size={14} md:size={16} fill="white" />
               </button>
             </div>
             <div className="absolute right-[-10px] bottom-[-10px] w-[50%] md:w-[55%] h-[110%] md:h-[120%] z-20 flex items-end justify-end transition-transform duration-700 group-hover:scale-105">
@@ -190,7 +188,6 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
           </div>
         </div>
 
-        {/* Right Side */}
         <div className="md:col-span-4 flex flex-col gap-6 md:gap-8">
           <div>
             <div className="flex items-center space-x-2 mb-4 px-1">
@@ -200,7 +197,7 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
             <div className="bg-white rounded-2xl p-4 shadow-sm flex justify-between items-center cursor-pointer hover:shadow-md transition-all">
               <div className="flex-1">
                 <div className="text-[#3E3B53] text-[13px] font-bold">Birthday Card</div>
-                <div className="text-gray-400 text-[10px]">all ways jump! with you</div>
+                <div className="text-gray-400 text-[10px]">all ways jump!<br/>with you</div>
               </div>
               <div className="w-12 h-12 rounded-xl bg-blue-100 overflow-hidden ml-3">
                 <img src="https://images.unsplash.com/photo-1580477667995-2b92084f4f5c?q=80&w=100&auto=format&fit=crop" className="w-full h-full object-cover" alt="card" />
@@ -218,7 +215,6 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
             </div>
             
             <div className="bg-white rounded-[24px] md:rounded-[32px] shadow-sm overflow-hidden border border-gray-50 flex flex-col">
-              {/* BOX GIỮ NGUYÊN NHƯ FILE GỐC CỦA BẠN */}
               <div className="p-4 md:p-5 flex items-start space-x-4 cursor-pointer hover:bg-gray-50 transition-all border-b border-gray-50">
                  <div className="p-2 bg-[#F3F5FA] rounded-xl"><Clock size={16} className="text-gray-400" /></div>
                  <div className="flex-1">
@@ -227,7 +223,6 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
                  </div>
               </div>
 
-              {/* Mini Player */}
               <div className="p-5 md:p-6 flex flex-col bg-white">
                 <div className="flex items-start space-x-4 mb-4 md:mb-6">
                   <div className={`p-3 rounded-2xl transition-all duration-500 ${isPlaying ? 'bg-[#3E3B53] text-white shadow-lg animate-pulse' : 'bg-[#F3F5FA] text-gray-400'}`}>
@@ -243,7 +238,7 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
                   <button onClick={() => setIsLooping(!isLooping)} className={`transition-colors ${isLooping ? 'text-blue-500' : 'text-gray-300'}`}><RotateCcw size={16} /></button>
                   <button className="text-gray-400 hover:text-[#3E3B53]"><SkipBack size={20} fill="currentColor" /></button>
                   <button onClick={togglePlay} className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-[#3E3B53] text-white rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl">
-                    {isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" className="ml-1" />}
+                    {isPlaying ? <Pause size={18} md:size={20} fill="currentColor" /> : <Play size={18} md:size={20} fill="currentColor" className="ml-1" />}
                   </button>
                   <button className="text-gray-400 hover:text-[#3E3B53]"><SkipForward size={20} fill="currentColor" /></button>
                 </div>
@@ -369,7 +364,7 @@ export default function App() {
             onSeek={handleSeek}
           />
         ) : (
-          <div className="md:ml-28 p-8 h-screen flex items-center justify-center">
+          <div className="w-full md:ml-28 p-8 h-[calc(100vh-3.5rem)] flex items-center justify-center">
              <h2 className="text-xl font-bold text-[#3E3B53] opacity-40 uppercase tracking-widest">Section {activeView}</h2>
           </div>
         )}
@@ -381,6 +376,10 @@ export default function App() {
         .font-script { font-family: 'Dancing Script', cursive; }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #3E3B53; border-radius: 10px; }
+        @media (max-width: 640px) {
+          .xs\\:block { display: block; }
+          .xs\\:flex { display: flex; }
+        }
       `}} />
     </div>
   );
