@@ -83,10 +83,12 @@ const SideNavBar = ({ activeView, setActiveView }) => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 h-16 bg-[#DDE2EF] flex flex-row items-center justify-around px-4 shadow-lg z-40 md:left-6 md:top-24 md:bottom-6 md:w-16 md:h-auto md:flex-col md:py-8 md:rounded-full border border-white/20">
-      <div className="hidden md:block w-10 h-10 rounded-full bg-gray-400 mb-10 overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:scale-110 transition-transform">
+      {/* Avatar - Luôn hiển thị trên cả mobile và desktop */}
+      <div className="w-10 h-10 rounded-full bg-gray-400 overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:scale-110 transition-transform flex-shrink-0 md:mb-10">
         <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=100&auto=format&fit=crop" alt="Profile" className="w-full h-full object-cover" />
       </div>
-      <div className="flex flex-row md:flex-1 md:flex-col space-x-6 sm:space-x-10 md:space-x-0 md:space-y-8">
+      
+      <div className="flex flex-row md:flex-1 md:flex-col space-x-4 sm:space-x-10 md:space-x-0 md:space-y-8">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeView === item.id;
@@ -216,6 +218,7 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
             </div>
             
             <div className="bg-white rounded-[24px] md:rounded-[32px] shadow-sm overflow-hidden border border-gray-50 flex flex-col">
+              {/* BOX GIỮ NGUYÊN NHƯ FILE GỐC CỦA BẠN */}
               <div className="p-4 md:p-5 flex items-start space-x-4 cursor-pointer hover:bg-gray-50 transition-all border-b border-gray-50">
                  <div className="p-2 bg-[#F3F5FA] rounded-xl"><Clock size={16} className="text-gray-400" /></div>
                  <div className="flex-1">
@@ -378,10 +381,6 @@ export default function App() {
         .font-script { font-family: 'Dancing Script', cursive; }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #3E3B53; border-radius: 10px; }
-        @media (max-width: 640px) {
-          .xs\\:block { display: block; }
-          .xs\\:flex { display: flex; }
-        }
       `}} />
     </div>
   );
