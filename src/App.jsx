@@ -72,8 +72,10 @@ const SideNavBar = ({ activeView, setActiveView, onTriggerHeader }) => {
     onTriggerHeader();
   };
   return (
-    <div className="fixed bottom-0 left-0 right-0 h-16 bg-white/70 backdrop-blur-lg flex flex-row items-center justify-around px-4 shadow-[0_-4px_10px_rgba(0,0,0,0.1)] z-[100] md:left-6 md:top-24 md:bottom-6 md:w-16 md:h-auto md:flex-col md:py-8 md:rounded-full border border-white/40">
-      <div onClick={onTriggerHeader} className="w-10 h-10 rounded-full bg-gray-400 overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:scale-110 transition-transform flex-shrink-0 md:mb-10">
+    /* Đã thu nhỏ chiều cao từ h-16 -> h-14 trên mobile */
+    <div className="fixed bottom-0 left-0 right-0 h-14 bg-white/70 backdrop-blur-lg flex flex-row items-center justify-around px-4 shadow-[0_-4px_10px_rgba(0,0,0,0.1)] z-[100] md:left-6 md:top-24 md:bottom-6 md:w-16 md:h-auto md:flex-col md:py-8 md:rounded-full border border-white/40">
+      {/* Thu nhỏ Avatar từ w-10 -> w-8 */}
+      <div onClick={onTriggerHeader} className="w-8 h-8 rounded-full bg-gray-400 overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:scale-110 transition-transform flex-shrink-0 md:w-10 md:h-10 md:mb-10">
         <img src="https://i.ibb.co/5WVkbrNc/avatar.jpg" alt="Profile" className="w-full h-full object-cover" />
       </div>
       <div className="flex flex-row md:flex-1 md:flex-col space-x-4 sm:space-x-10 md:space-x-0 md:space-y-8">
@@ -82,12 +84,12 @@ const SideNavBar = ({ activeView, setActiveView, onTriggerHeader }) => {
           const isActive = activeView === item.id;
           return (
             <button key={item.id} onClick={() => handleNavClick(item.id)} className={`p-2 rounded-xl transition-all duration-200 ${isActive ? 'text-[#3E3B53] bg-white shadow-sm' : 'text-gray-500 hover:text-[#3E3B53]'}`}>
-              <Icon size={22} className={isActive ? 'fill-current' : ''} />
+              <Icon size={20} className={isActive ? 'fill-current' : ''} />
             </button>
           );
         })}
       </div>
-      <button className="p-2 text-gray-500 hover:text-red-500 md:mt-auto"><LogOut size={22} /></button>
+      <button className="p-2 text-gray-500 hover:text-red-500 md:mt-auto"><LogOut size={20} /></button>
     </div>
   );
 };
@@ -207,13 +209,22 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
                   <div className="flex-1 min-w-0"><div className="text-[#3E3B53] text-sm font-bold truncate">303 PM</div><div className="text-gray-500 text-[11px] mt-0.5 truncate">Sharou (しゃろう)</div></div>
                 </div>
                 
-                <div className="flex items-center justify-center space-x-8 mb-6 w-full">
-                  <button onClick={() => setIsLooping(!isLooping)} className={`transition-colors ${isLooping ? 'text-blue-500' : 'text-gray-400'}`}><RotateCcw size={16} /></button>
-                  <button className="text-gray-400 hover:text-[#3E3B53]"><SkipBack size={20} fill="currentColor" /></button>
-                  <button onClick={togglePlay} className="w-14 h-14 flex items-center justify-center bg-[#3E3B53] text-white rounded-full hover:scale-110 active:scale-95 transition-all shadow-xl">
-                    {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-1" />}
+                {/* TRÌNH PHÁT NHẠC ĐÃ ĐƯỢC CĂN CHỈNH: Nút lặp mép trái, 3 nút còn lại ở giữa */}
+                <div className="relative flex items-center justify-center mb-6 w-full px-1">
+                  <button 
+                    onClick={() => setIsLooping(!isLooping)} 
+                    className={`absolute left-0 transition-colors ${isLooping ? 'text-blue-500' : 'text-gray-400'}`}
+                  >
+                    <RotateCcw size={16} />
                   </button>
-                  <button className="text-gray-400 hover:text-[#3E3B53]"><SkipForward size={20} fill="currentColor" /></button>
+                  
+                  <div className="flex items-center space-x-6">
+                    <button className="text-gray-400 hover:text-[#3E3B53]"><SkipBack size={20} fill="currentColor" /></button>
+                    <button onClick={togglePlay} className="w-14 h-14 flex items-center justify-center bg-[#3E3B53] text-white rounded-full hover:scale-110 active:scale-95 transition-all shadow-xl">
+                      {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-1" />}
+                    </button>
+                    <button className="text-gray-400 hover:text-[#3E3B53]"><SkipForward size={20} fill="currentColor" /></button>
+                  </div>
                 </div>
 
                 <div className="relative group select-none">
@@ -245,7 +256,6 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
           </div>
         </div>
       </div>
-      {/* Khoảng đệm để ko bị SideNavBar che trên mobile */}
       <div className="h-20 md:hidden"></div> 
     </div>
   );
