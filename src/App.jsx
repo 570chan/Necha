@@ -1,4 +1,3 @@
-react
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { 
   User, Play, Menu, Home, Contact, 
