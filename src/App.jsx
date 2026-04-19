@@ -85,7 +85,7 @@ const SideNavBar = ({ activeView, setActiveView }) => {
     <div className="fixed bottom-0 left-0 right-0 h-16 bg-[#DDE2EF] flex flex-row items-center justify-around px-4 shadow-lg z-40 md:left-6 md:top-24 md:bottom-6 md:w-16 md:h-auto md:flex-col md:py-8 md:rounded-full border border-white/20">
       {/* Avatar - Luôn hiển thị trên cả mobile và desktop */}
       <div className="w-10 h-10 rounded-full bg-gray-400 overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:scale-110 transition-transform flex-shrink-0 md:mb-10">
-        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=100&auto=format&fit=crop" alt="Profile" className="w-full h-full object-cover" />
+        <img src="https://i.ibb.co/5WVkbrNc/avatar.jpg " alt="Profile" className="w-full h-full object-cover" />
       </div>
       
       <div className="flex flex-row md:flex-1 md:flex-col space-x-4 sm:space-x-10 md:space-x-0 md:space-y-8">
