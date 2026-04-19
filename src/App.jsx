@@ -1,1 +1,387 @@
+react
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { 
+  User, Play, Menu, Home, Contact, 
+  Heart, Settings, LogOut, Search, 
+  PlayCircle, Music, Mic, Clock, Bell, 
+  ImageIcon, ChevronDown, ChevronRight,
+  Pause, RotateCcw, SkipBack, SkipForward,
+  CreditCard, BookOpen, BarChart3, Radio
+} from 'lucide-react';
 
+const MUSIC_URL = "https://upcdn.io/223k2d3/raw/%E3%80%9030%E5%88%86%E8%80%90%E4%B9%85%E3%83%95%E3%83%AA%E3%83%BCBGM%E3%80%91303%20PM%20_%20%E3%81%97%E3%82%83%E3%82%8D%E3%81%86%E3%80%90%E5%85%AC%E5%BC%8F%E3%80%91%20-%20%E3%81%97%E3%82%83%E3%82%8D%E3%81%86%20Sharou.mp3";
+
+const formatTime = (time) => {
+  if (isNaN(time)) return "00:00";
+  const mins = Math.floor(time / 60);
+  const secs = Math.floor(time % 60);
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+};
+
+const AudioVisualizer = ({ isPlaying, progress, onSeek }) => {
+  const bars = [60, 40, 80, 50, 30, 70, 90, 40, 60, 80, 30, 50, 70, 40, 90, 60, 30, 80, 50, 40];
+  return (
+    <div className="flex items-center space-x-[3px] h-6 px-2 cursor-pointer group/viz">
+      {bars.map((height, i) => {
+        const barThreshold = (i / bars.length) * 100;
+        const isActive = progress >= barThreshold;
+        return (
+          <div 
+            key={i}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSeek(barThreshold);
+            }}
+            className={`w-[3px] rounded-full transition-all duration-300 ease-out hover:scale-y-125 ${
+              isActive ? 'bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]' : 'bg-white/20'
+            }`}
+            style={{ 
+              height: `${height}%`,
+              transform: isPlaying ? `scaleY(${0.7 + Math.random() * 0.6})` : 'scaleY(1)',
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+};
+
+const TopNavBar = ({ isPlaying, progress, currentTime, duration, togglePlay, isVisible, onSeek }) => (
+  <div className={`w-full h-14 bg-[#3E3B53] text-white flex items-center justify-between px-6 text-sm fixed top-0 z-50 shadow-md transition-transform duration-500 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+    {/* Khung chữ nhật User Profile bên trái */}
+    <div className="flex items-center bg-white/10 border border-white/20 rounded-xl px-4 py-1.5 space-x-3 cursor-pointer hover:bg-white/20 transition-all">
+      <div className="bg-white/20 p-1 rounded-lg">
+        <User size={16} />
+      </div>
+      <div className="flex flex-col leading-none">
+        <span className="font-bold text-[10px] tracking-widest uppercase">@NAWSPHIC</span>
+        <span className="text-[8px] text-white/50 font-medium">RANK: 01</span>
+      </div>
+      <div className="font-script text-lg ml-2 italic text-[#DDE2EF] opacity-90 select-none">Leo/need</div>
+    </div>
+
+    <div className="flex items-center space-x-6">
+      <div className="flex items-center bg-black/20 rounded-full px-4 py-1.5 space-x-3">
+        <span className="text-[10px] font-mono w-24 text-center text-white/70">
+          {formatTime(currentTime)} / {formatTime(duration)}
+        </span>
+        <AudioVisualizer isPlaying={isPlaying} progress={progress} onSeek={onSeek} />
+        <button onClick={togglePlay} className="hover:scale-110 transition-transform active:scale-90">
+          {isPlaying ? <Pause size={14} fill="white" /> : <Play size={14} fill="white" />}
+        </button>
+      </div>
+      <Menu size={20} className="cursor-pointer hover:rotate-90 transition-transform" />
+    </div>
+  </div>
+);
+
+const SideNavBar = ({ activeView, setActiveView }) => {
+  const navItems = [
+    { id: 'home', icon: Home },
+    { id: 'contacts', icon: Contact },
+    { id: 'favorites', icon: Heart },
+    { id: 'settings', icon: Settings },
+  ];
+  return (
+    <div className="fixed left-6 top-24 bottom-6 w-16 bg-[#DDE2EF] rounded-full flex flex-col items-center py-8 shadow-sm z-40 border border-white/20">
+      <div className="w-10 h-10 rounded-full bg-gray-400 mb-10 overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:scale-110 transition-transform">
+        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=100&auto=format&fit=crop" alt="Profile" className="w-full h-full object-cover" />
+      </div>
+      <div className="flex-1 flex flex-col space-y-8">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = activeView === item.id;
+          return (
+            <button key={item.id} onClick={() => setActiveView(item.id)} className={`p-2 rounded-xl transition-all duration-200 ${isActive ? 'text-[#3E3B53] bg-white/50 shadow-sm' : 'text-gray-400 hover:text-[#3E3B53]'}`}>
+              <Icon size={22} className={isActive ? 'fill-current' : ''} />
+            </button>
+          );
+        })}
+      </div>
+      <button className="p-2 text-gray-400 hover:text-red-500 mt-auto"><LogOut size={22} /></button>
+    </div>
+  );
+};
+
+const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay, isLooping, setIsLooping, onSeek }) => {
+  const characterImageUrl = "https://i.ibb.co/j9qXdqNM/taoanhdep-xoa-nen-anh-92883.png";
+  const progressBarRef = useRef(null);
+
+  const handleBarClick = (e) => {
+    const rect = progressBarRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const clickedProgress = (x / rect.width) * 100;
+    onSeek(clickedProgress);
+  };
+
+  return (
+    <div className="ml-28 p-8 max-w-[1400px] animate-in fade-in duration-700">
+      <div className="flex justify-between items-end mb-6">
+        <div className="text-gray-400 text-xs tracking-widest font-bold uppercase">
+          Dashboard <span className="mx-2 text-gray-300">/</span> <span className="text-[#3E3B53]">Hoshino Ichika</span>
+        </div>
+        <div className="text-gray-400 text-xs flex items-center space-x-1 uppercase tracking-tighter">
+          <Clock size={12} />
+          <span>{new Date().toLocaleDateString('vi-VN')}</span>
+        </div>
+      </div>
+
+      <div className="relative w-1/2 mb-8">
+        <input type="text" placeholder="Search lessons, tracks..." className="w-full bg-[#DDE2EF] text-[#3E3B53] placeholder-gray-400 rounded-2xl py-3 px-6 outline-none shadow-sm focus:ring-2 ring-[#3E3B53]/10 transition-all" />
+        <Search className="absolute right-6 top-3 text-gray-400" size={18} />
+      </div>
+
+      <div className="grid grid-cols-12 gap-8">
+        <div className="col-span-8 flex flex-col gap-8">
+          <div className="bg-white rounded-[40px] p-10 relative shadow-sm h-64 flex flex-col justify-center overflow-hidden group">
+            <div className="w-1/2 z-10 relative">
+              <div className="text-gray-400 text-xs mb-1 font-bold">Project Sekai</div>
+              <h1 className="text-4xl font-extrabold text-[#3E3B53] leading-tight mb-6">Welcome! to our<br/>band Leo-need!!!</h1>
+              <button className="bg-[#65637B] hover:bg-[#3E3B53] text-white px-6 py-2 rounded-full text-xs font-bold flex items-center space-x-3 transition-all active:scale-95 shadow-lg">
+                <span>Play Now</span><PlayCircle size={16} fill="white" />
+              </button>
+            </div>
+            <div className="absolute right-0 bottom-[-10px] w-[55%] h-[120%] z-20 flex items-end justify-end transition-transform duration-700 group-hover:scale-105">
+               <img src={characterImageUrl} alt="Character" className="max-h-full object-contain object-bottom drop-shadow-2xl" />
+            </div>
+          </div>
+
+          <div>
+            <div className="flex justify-between items-end mb-4 px-1">
+              <div className="flex items-center space-x-2">
+                <BookOpen size={18} className="text-[#3E3B53]" />
+                <h2 className="text-[#3E3B53] font-bold text-base">New Courses</h2>
+              </div>
+              <button className="text-gray-400 text-[10px] font-bold hover:text-[#3E3B53]">view all</button>
+            </div>
+            <div className="grid grid-cols-3 gap-6">
+              {[
+                { title: 'Songwriting &\nArrangement', icon: Music, dur: '4 weeks' },
+                { title: 'Stage\nPerformance', icon: PlayCircle, dur: '3 weeks' },
+                { title: 'Recording &\nProduction Basics', icon: Mic, dur: '3 weeks' }
+              ].map((course, i) => (
+                <div key={i} className="bg-white rounded-[32px] p-6 shadow-sm hover:-translate-y-2 transition-all cursor-pointer group">
+                  <div className="flex items-start space-x-4 mb-10">
+                    <div className="bg-[#F3F5FA] p-3 rounded-2xl group-hover:bg-[#DDE2EF] transition-colors"><course.icon size={20} className="text-gray-500" /></div>
+                    <div className="text-[#3E3B53] font-bold text-sm leading-tight whitespace-pre-line">{course.title}</div>
+                  </div>
+                  <div className="text-[10px] text-gray-400 font-bold">Duration: <span className="text-[#3E3B53]">{course.dur}</span></div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-center space-x-2 mb-4 px-1">
+               <BarChart3 size={18} className="text-[#3E3B53]" />
+               <h2 className="text-[#3E3B53] font-bold text-base">Video Activity</h2>
+            </div>
+            <div className="bg-white rounded-[32px] p-8 shadow-sm flex items-center justify-between group">
+              <div className="w-full mr-12">
+                <div className="text-xs text-gray-400 font-bold mb-4 uppercase tracking-wider">Learning Progress</div>
+                <div className="w-full bg-[#F3F5FA] h-3 rounded-full overflow-hidden">
+                  <div className="bg-[#595A72] w-[65%] h-full rounded-full transition-all group-hover:bg-[#3E3B53]"></div>
+                </div>
+              </div>
+              <div className="text-4xl font-black text-[#3E3B53]">65%</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side */}
+        <div className="col-span-4 flex flex-col gap-8">
+          <div>
+            <div className="flex items-center space-x-2 mb-4 px-1">
+               <CreditCard size={16} className="text-[#3E3B53]" />
+               <h2 className="text-[#3E3B53] font-bold text-sm">Collection Card</h2>
+            </div>
+            <div className="bg-white rounded-2xl p-4 shadow-sm flex justify-between items-center cursor-pointer hover:shadow-md transition-all">
+              <div className="flex-1">
+                <div className="text-[#3E3B53] text-[13px] font-bold">Birthday Card</div>
+                <div className="text-gray-400 text-[10px]">all ways jump! with you</div>
+              </div>
+              <div className="w-12 h-12 rounded-xl bg-blue-100 overflow-hidden ml-3">
+                <img src="https://images.unsplash.com/photo-1580477667995-2b92084f4f5c?q=80&w=100&auto=format&fit=crop" className="w-full h-full object-cover" alt="card" />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div className="flex justify-between items-center mb-4 px-1">
+               <div className="flex items-center space-x-2">
+                  <Bell size={16} className="text-[#3E3B53]" />
+                  <h2 className="text-[#3E3B53] font-bold text-sm">Updates & Player</h2>
+               </div>
+               <button className="text-gray-400 text-[10px] font-bold hover:text-[#3E3B53]">See all</button>
+            </div>
+            
+            <div className="bg-white rounded-[32px] shadow-sm overflow-hidden border border-gray-50 divide-y divide-gray-50">
+              <div className="p-5 flex items-start space-x-4 cursor-pointer hover:bg-gray-50 transition-all">
+                 <div className="p-2 bg-[#F3F5FA] rounded-xl"><Clock size={16} className="text-gray-400" /></div>
+                 <div className="flex-1">
+                   <div className="text-[#3E3B53] text-[11px] font-bold">Band practice starts soon</div>
+                   <div className="text-gray-400 text-[9px] mt-1">Don't forget your guitar!</div>
+                 </div>
+              </div>
+
+              {/* Mini Player */}
+              <div className="p-6 flex flex-col bg-white">
+                <div className="flex items-start space-x-4 mb-6">
+                  <div className={`p-3 rounded-2xl transition-all duration-500 ${isPlaying ? 'bg-[#3E3B53] text-white shadow-lg animate-pulse' : 'bg-[#F3F5FA] text-gray-400'}`}>
+                    <Radio size={20} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[#3E3B53] text-sm font-bold truncate">303 PM</div>
+                    <div className="text-gray-400 text-[11px] mt-0.5 truncate">Sharou (しゃろう)</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-center space-x-8 mb-6">
+                  <button onClick={() => setIsLooping(!isLooping)} className={`transition-colors ${isLooping ? 'text-blue-500' : 'text-gray-300'}`}><RotateCcw size={16} /></button>
+                  <button className="text-gray-400 hover:text-[#3E3B53]"><SkipBack size={20} fill="currentColor" /></button>
+                  <button onClick={togglePlay} className="w-12 h-12 flex items-center justify-center bg-[#3E3B53] text-white rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl">
+                    {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-1" />}
+                  </button>
+                  <button className="text-gray-400 hover:text-[#3E3B53]"><SkipForward size={20} fill="currentColor" /></button>
+                </div>
+
+                <div className="relative group select-none">
+                  <div className="flex justify-between text-[10px] font-mono text-gray-400 mb-2">
+                    <span>{formatTime(currentTime)}</span><span>{formatTime(duration)}</span>
+                  </div>
+                  <div 
+                    ref={progressBarRef}
+                    onClick={handleBarClick}
+                    className="w-full h-2 bg-[#F3F5FA] rounded-full overflow-hidden cursor-pointer relative"
+                  >
+                    <div 
+                      className="h-full bg-[#3E3B53] transition-all duration-200 ease-linear rounded-full relative" 
+                      style={{ width: `${progress}%` }}
+                    >
+                      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-[#3E3B53] border-2 border-white rounded-full shadow-md scale-0 group-hover:scale-100 transition-transform" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-5 flex items-start space-x-4 cursor-pointer hover:bg-gray-50 transition-all">
+                 <div className="p-2 bg-[#F3F5FA] rounded-xl"><ImageIcon size={16} className="text-gray-400" /></div>
+                 <div className="flex-1">
+                   <div className="text-[#3E3B53] text-[11px] font-bold">New Outfit Unlocked</div>
+                   <div className="text-gray-400 text-[9px] mt-1">Check it out in the wardrobe!</div>
+                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default function App() {
+  const [activeView, setActiveView] = useState('home');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [isLooping, setIsLooping] = useState(false);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const audioRef = useRef(null);
+  const timeoutRef = useRef(null);
+
+  const resetHeaderTimeout = useCallback(() => {
+    setIsHeaderVisible(true);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => setIsHeaderVisible(false), 5000);
+  }, []);
+
+  useEffect(() => {
+    const handleInteraction = () => resetHeaderTimeout();
+    ['mousemove', 'scroll', 'touchstart', 'mousedown', 'keydown'].forEach(ev => window.addEventListener(ev, handleInteraction));
+    resetHeaderTimeout();
+    return () => {
+      ['mousemove', 'scroll', 'touchstart', 'mousedown', 'keydown'].forEach(ev => window.removeEventListener(ev, handleInteraction));
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [resetHeaderTimeout]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const onLoadedMetadata = () => setDuration(audio.duration);
+    const onTimeUpdate = () => {
+      setCurrentTime(audio.currentTime);
+      setProgress((audio.currentTime / audio.duration) * 100);
+    };
+    const onEnded = () => {
+      if (isLooping) { audio.currentTime = 0; audio.play(); }
+      else { setIsPlaying(false); setProgress(0); setCurrentTime(0); }
+    };
+    audio.addEventListener('loadedmetadata', onLoadedMetadata);
+    audio.addEventListener('timeupdate', onTimeUpdate);
+    audio.addEventListener('ended', onEnded);
+    return () => {
+      audio.removeEventListener('loadedmetadata', onLoadedMetadata);
+      audio.removeEventListener('timeupdate', onTimeUpdate);
+      audio.removeEventListener('ended', onEnded);
+    };
+  }, [isLooping]);
+
+  const togglePlay = () => {
+    if (isPlaying) audioRef.current.pause();
+    else audioRef.current.play().catch(console.error);
+    setIsPlaying(!isPlaying);
+    resetHeaderTimeout();
+  };
+
+  const handleSeek = (percent) => {
+    if (!audioRef.current || isNaN(audioRef.current.duration)) return;
+    const newTime = (percent / 100) * audioRef.current.duration;
+    audioRef.current.currentTime = newTime;
+    setCurrentTime(newTime);
+    setProgress(percent);
+    resetHeaderTimeout();
+  };
+
+  return (
+    <div className="min-h-screen bg-[#EEF0F5] font-sans pt-14 selection:bg-[#3E3B53] selection:text-white overflow-x-hidden">
+      <audio ref={audioRef} src={MUSIC_URL} preload="auto" />
+      <TopNavBar 
+        isPlaying={isPlaying} 
+        progress={progress} 
+        currentTime={currentTime} 
+        duration={duration} 
+        togglePlay={togglePlay} 
+        isVisible={isHeaderVisible}
+        onSeek={handleSeek}
+      />
+      <SideNavBar activeView={activeView} setActiveView={setActiveView} />
+      <main className={`transition-all duration-500 ${isHeaderVisible ? 'mt-0' : '-mt-14'}`}>
+        {activeView === 'home' ? (
+          <DashboardView 
+            isPlaying={isPlaying} 
+            progress={progress} 
+            currentTime={currentTime} 
+            duration={duration} 
+            togglePlay={togglePlay} 
+            isLooping={isLooping} 
+            setIsLooping={setIsLooping}
+            onSeek={handleSeek}
+          />
+        ) : (
+          <div className="ml-28 p-8 h-screen flex items-center justify-center">
+             <h2 className="text-xl font-bold text-[#3E3B53] opacity-40 uppercase tracking-widest">Section {activeView}</h2>
+          </div>
+        )}
+      </main>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Dancing+Script:wght@700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-script { font-family: 'Dancing Script', cursive; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #3E3B53; border-radius: 10px; }
+      `}} />
+    </div>
+  );
+}
