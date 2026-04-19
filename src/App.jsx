@@ -244,7 +244,7 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
             <div className="bg-white rounded-[24px] p-4 shadow-sm border border-transparent">
               <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-3 bg-gray-100">
                 <img 
-                  src="https://i.ibb.co/3ykG2jY/ichika-video-bg.jpg" 
+                  src="https://i.ibb.co/VWxCNrCT/899db6193d3e0a7828d58e552546054a.jpg" 
                   alt="Feature Preview" 
                   className="w-full h-full object-cover"
                 />
