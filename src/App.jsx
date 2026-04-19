@@ -234,7 +234,7 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
                 <video 
                   ref={videoRef}
                   className="w-full h-full object-cover cursor-pointer"
-                  src="https://www.w3schools.com/html/mov_bbb.mp4" 
+                  src="https://ik.imagekit.io/Nechann/kagura-nana-crying-virtual-youtuber-moewalls-com.mp4?updatedAt=1768730515129" 
                   onClick={() => videoRef.current.paused ? videoRef.current.play() : videoRef.current.pause()}
                 />
               </div>
