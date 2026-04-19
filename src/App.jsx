@@ -66,14 +66,12 @@ const TopNavBar = ({ isPlaying, progress, currentTime, duration, togglePlay, isV
 
 const SideNavBar = ({ activeView, setActiveView, onTriggerHeader }) => {
   const navItems = [{ id: 'home', icon: Home }, { id: 'contacts', icon: Contact }, { id: 'favorites', icon: Heart }, { id: 'settings', icon: Settings }];
-  
   const handleNavClick = (id) => {
     setActiveView(id);
-    onTriggerHeader(); // Hiện Top Bar khi click
+    onTriggerHeader();
   };
-
   return (
-    <div className="fixed bottom-0 left-0 right-0 h-16 bg-[#DDE2EF] flex flex-row items-center justify-around px-4 shadow-lg z-40 md:left-6 md:top-24 md:bottom-6 md:w-16 md:h-auto md:flex-col md:py-8 md:rounded-full border border-white/20">
+    <div className="fixed bottom-0 left-0 right-0 h-16 bg-[#DDE2EF] flex flex-row items-center justify-around px-4 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-[60] md:left-6 md:top-24 md:bottom-6 md:w-16 md:h-auto md:flex-col md:py-8 md:rounded-full border border-white/20">
       <div onClick={onTriggerHeader} className="w-10 h-10 rounded-full bg-gray-400 overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:scale-110 transition-transform flex-shrink-0 md:mb-10">
         <img src="https://i.ibb.co/5WVkbrNc/avatar.jpg" alt="Profile" className="w-full h-full object-cover" />
       </div>
@@ -112,8 +110,7 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
   };
 
   return (
-    <div className="w-full md:ml-28 p-4 sm:p-6 md:p-8 max-w-[1400px] animate-in fade-in duration-700 pb-24 md:pb-8">
-      {/* Search & Breadcrumbs */}
+    <div className="w-full md:ml-28 p-4 sm:p-6 md:p-8 max-w-[1400px] animate-in fade-in duration-700 pb-32 md:pb-8">
       <div className="flex justify-between items-end mb-6">
         <div className="text-gray-400 text-[10px] md:text-xs tracking-widest font-bold uppercase">Dashboard / <span className="text-[#3E3B53]">Hoshino Ichika</span></div>
         <div className="hidden xs:flex text-gray-400 text-[10px] items-center space-x-1 uppercase tracking-tighter"><Clock size={12} /><span>{new Date().toLocaleDateString('vi-VN')}</span></div>
@@ -125,7 +122,6 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
-        {/* Left Column */}
         <div className="md:col-span-8 flex flex-col gap-6 md:gap-8">
           <div className="bg-white rounded-[32px] md:rounded-[40px] p-6 md:p-10 relative shadow-sm h-48 md:h-64 flex flex-col justify-center overflow-hidden group cursor-pointer transition-all duration-500 hover:shadow-2xl hover:shadow-[#3E3B53]/10">
             <div className="w-2/3 md:w-1/2 z-10 relative transition-transform duration-500 group-hover:translate-x-2">
@@ -169,12 +165,9 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
           </div>
         </div>
 
-        {/* Right Column */}
         <div className="md:col-span-4 flex flex-col gap-6 md:gap-8">
           <div className="space-y-4">
             <div className="flex items-center space-x-2 px-1"><CreditCard size={16} className="text-[#3E3B53]" /><h2 className="text-[#3E3B53] font-bold text-sm">Collection Card</h2></div>
-            
-            {/* Card Birthday - Mở rộng mượt mà */}
             <div ref={cardRef} onClick={() => setIsCardExpanded(!isCardExpanded)} className={`bg-white rounded-[24px] shadow-sm overflow-hidden transition-all duration-500 cursor-pointer ${isCardExpanded ? 'shadow-xl' : 'hover:shadow-lg hover:-translate-y-1'}`}>
               <div className="p-5 flex justify-between items-center">
                 <div className="flex-1">
@@ -191,7 +184,6 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
               </div>
             </div>
 
-            {/* Box Member - Chỉ Hover */}
             <div className="bg-white rounded-[24px] p-5 shadow-sm flex justify-between items-center cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all border border-transparent hover:border-[#DDE2EF]">
               <div className="flex-1">
                 <div className="text-[#3E3B53] text-[13px] font-bold uppercase">Member Card</div>
@@ -208,14 +200,12 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
                  <div className="flex-1"><div className="text-[#3E3B53] text-[11px] font-bold">Band practice starts soon</div><div className="text-gray-400 text-[9px] mt-1">Don't forget your guitar!</div></div>
               </div>
 
-              {/* Mini Player */}
               <div className="p-6 flex flex-col bg-white">
                 <div className="flex items-start space-x-4 mb-6">
                   <div className={`p-3 rounded-2xl transition-all duration-500 ${isPlaying ? 'bg-[#3E3B53] text-white shadow-lg animate-pulse' : 'bg-[#F3F5FA] text-gray-400'}`}><Radio size={20} /></div>
                   <div className="flex-1 min-w-0"><div className="text-[#3E3B53] text-sm font-bold truncate">303 PM</div><div className="text-gray-400 text-[11px] mt-0.5 truncate">Sharou (しゃろう)</div></div>
                 </div>
                 
-                {/* Nút căn giữa tuyệt đối */}
                 <div className="flex items-center justify-center space-x-8 mb-6 w-full">
                   <button onClick={() => setIsLooping(!isLooping)} className={`transition-colors ${isLooping ? 'text-blue-500' : 'text-gray-300'}`}><RotateCcw size={16} /></button>
                   <button className="text-gray-400 hover:text-[#3E3B53]"><SkipBack size={20} fill="currentColor" /></button>
@@ -233,21 +223,15 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
                 </div>
               </div>
 
-              {/* Box Outfit Unlocked - Khôi phục lại */}
               <div className="p-4 md:p-5 flex items-start space-x-4 cursor-pointer hover:bg-gray-50 border-t border-gray-50">
                  <div className="p-2 bg-[#F3F5FA] rounded-xl"><ImageIcon size={16} className="text-gray-400" /></div>
                  <div className="flex-1"><div className="text-[#3E3B53] text-[11px] font-bold">New Outfit Unlocked</div><div className="text-gray-400 text-[9px] mt-1">Check it out in the wardrobe!</div></div>
               </div>
             </div>
 
-            {/* Box Video đã sửa thành Box Ảnh (Không hover mở rộng) */}
-            <div className="bg-white rounded-[24px] p-4 shadow-sm border border-transparent">
+            <div className="bg-white rounded-[24px] p-4 shadow-sm border border-transparent mb-4">
               <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-3 bg-gray-100">
-                <img 
-                  src="https://i.ibb.co/VWxCNrCT/899db6193d3e0a7828d58e552546054a.jpg" 
-                  alt="Feature Preview" 
-                  className="w-full h-full object-cover"
-                />
+                <img src="https://i.ibb.co/VWxCNrCT/899db6193d3e0a7828d58e552546054a.jpg" alt="Feature Preview" className="w-full h-full object-cover" />
               </div>
               <div className="px-1">
                 <div className="text-[#3E3B53] text-[13px] font-bold leading-tight">The Beginning of Something New</div>
@@ -271,11 +255,10 @@ export default function App() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isLooping, setIsLooping] = useState(false);
-  const [isHeaderVisible, setIsHeaderVisible] = useState(false); // Mặc định ẩn
+  const [isHeaderVisible, setIsHeaderVisible] = useState(false);
   const audioRef = useRef(null);
   const timeoutRef = useRef(null);
 
-  // Hàm hiện Header 5s khi được gọi
   const triggerHeader = useCallback(() => {
     setIsHeaderVisible(true);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -319,24 +302,29 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#EEF0F5] font-sans pt-14 selection:bg-[#3E3B53] selection:text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#EEF0F5] font-sans pt-14 selection:bg-[#3E3B53] selection:text-white overflow-x-hidden relative">
       <audio ref={audioRef} src={MUSIC_URL} preload="auto" />
       <TopNavBar isPlaying={isPlaying} progress={progress} currentTime={currentTime} duration={duration} togglePlay={togglePlay} isVisible={isHeaderVisible} onSeek={handleSeek} />
       <SideNavBar activeView={activeView} setActiveView={setActiveView} onTriggerHeader={triggerHeader} />
-      <main className={`transition-all duration-500 flex justify-center`}>
+      
+      <main className="flex justify-center w-full">
         {activeView === 'home' ? (
           <DashboardView isPlaying={isPlaying} progress={progress} currentTime={currentTime} duration={duration} togglePlay={togglePlay} isLooping={isLooping} setIsLooping={setIsLooping} onSeek={handleSeek} />
         ) : (
-          <div className="w-full md:ml-28 p-8 h-[calc(100vh-3.5rem)] flex items-center justify-center"><h2 className="text-xl font-bold text-[#3E3B53] opacity-40 uppercase tracking-widest">Section {activeView}</h2></div>
+          <div className="w-full md:ml-28 p-8 min-h-[calc(100vh-7rem)] flex items-center justify-center">
+            <h2 className="text-xl font-bold text-[#3E3B53] opacity-40 uppercase tracking-widest">Section {activeView}</h2>
+          </div>
         )}
       </main>
+
       <style dangerouslySetInnerHTML={{ __html: `
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Dancing+Script:wght@700&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; }
         .font-script { font-family: 'Dancing Script', cursive; }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #3E3B53; border-radius: 10px; }
       `}} />
     </div>
   );
-            } 
+}
+ 
