@@ -40,7 +40,7 @@ const AudioVisualizer = ({ isPlaying, progress, onSeek }) => {
 };
 
 const TopNavBar = ({ isPlaying, progress, currentTime, duration, togglePlay, isVisible, onSeek }) => (
-  <div className={`w-full h-14 bg-[#3E3B53] text-white flex items-center justify-between px-4 md:px-6 text-sm fixed top-0 z-50 shadow-md transition-transform duration-500 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+  <div className={`w-full h-14 bg-[#3E3B53] text-white flex items-center justify-between px-4 md:px-6 text-sm fixed top-0 z-50 shadow-md transition-all duration-500 ease-in-out ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}>
     <div className="flex items-center bg-white/10 border border-white/20 rounded-xl px-2 md:px-4 py-1.5 space-x-2 md:space-x-3 cursor-pointer hover:bg-white/20 transition-all">
       <div className="bg-white/20 p-1 rounded-lg"><User size={14} /></div>
       <div className="flex flex-col leading-none">
@@ -64,11 +64,17 @@ const TopNavBar = ({ isPlaying, progress, currentTime, duration, togglePlay, isV
   </div>
 );
 
-const SideNavBar = ({ activeView, setActiveView }) => {
+const SideNavBar = ({ activeView, setActiveView, onTriggerHeader }) => {
   const navItems = [{ id: 'home', icon: Home }, { id: 'contacts', icon: Contact }, { id: 'favorites', icon: Heart }, { id: 'settings', icon: Settings }];
+  
+  const handleNavClick = (id) => {
+    setActiveView(id);
+    onTriggerHeader(); // Hiện Top Bar khi click
+  };
+
   return (
     <div className="fixed bottom-0 left-0 right-0 h-16 bg-[#DDE2EF] flex flex-row items-center justify-around px-4 shadow-lg z-40 md:left-6 md:top-24 md:bottom-6 md:w-16 md:h-auto md:flex-col md:py-8 md:rounded-full border border-white/20">
-      <div className="w-10 h-10 rounded-full bg-gray-400 overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:scale-110 transition-transform flex-shrink-0 md:mb-10">
+      <div onClick={onTriggerHeader} className="w-10 h-10 rounded-full bg-gray-400 overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:scale-110 transition-transform flex-shrink-0 md:mb-10">
         <img src="https://i.ibb.co/5WVkbrNc/avatar.jpg" alt="Profile" className="w-full h-full object-cover" />
       </div>
       <div className="flex flex-row md:flex-1 md:flex-col space-x-4 sm:space-x-10 md:space-x-0 md:space-y-8">
@@ -76,7 +82,7 @@ const SideNavBar = ({ activeView, setActiveView }) => {
           const Icon = item.icon;
           const isActive = activeView === item.id;
           return (
-            <button key={item.id} onClick={() => setActiveView(item.id)} className={`p-2 rounded-xl transition-all duration-200 ${isActive ? 'text-[#3E3B53] bg-white/50 shadow-sm' : 'text-gray-400 hover:text-[#3E3B53]'}`}>
+            <button key={item.id} onClick={() => handleNavClick(item.id)} className={`p-2 rounded-xl transition-all duration-200 ${isActive ? 'text-[#3E3B53] bg-white/50 shadow-sm' : 'text-gray-400 hover:text-[#3E3B53]'}`}>
               <Icon size={22} className={isActive ? 'fill-current' : ''} />
             </button>
           );
@@ -91,7 +97,6 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
   const [isCardExpanded, setIsCardExpanded] = useState(false);
   const cardRef = useRef(null);
   const progressBarRef = useRef(null);
-  const videoRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -108,6 +113,7 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
 
   return (
     <div className="w-full md:ml-28 p-4 sm:p-6 md:p-8 max-w-[1400px] animate-in fade-in duration-700 pb-24 md:pb-8">
+      {/* Search & Breadcrumbs */}
       <div className="flex justify-between items-end mb-6">
         <div className="text-gray-400 text-[10px] md:text-xs tracking-widest font-bold uppercase">Dashboard / <span className="text-[#3E3B53]">Hoshino Ichika</span></div>
         <div className="hidden xs:flex text-gray-400 text-[10px] items-center space-x-1 uppercase tracking-tighter"><Clock size={12} /><span>{new Date().toLocaleDateString('vi-VN')}</span></div>
@@ -156,10 +162,10 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
             <div className="flex-1 mr-6 md:mr-12">
               <div className="text-[10px] md:text-xs text-gray-400 font-bold mb-3 md:mb-4 uppercase tracking-wider">Overall Progress</div>
               <div className="w-full bg-[#F3F5FA] h-2 md:h-3 rounded-full overflow-hidden">
-                <div className="bg-[#595A72] w-[65%] h-full rounded-full transition-all duration-700 group-hover:bg-[#3E3B53]"></div>
+                <div className="bg-[#595A72] w-[65%] h-full rounded-full transition-all duration-700 group-hover:bg-[#3E3B53] group-hover:w-[75%]"></div>
               </div>
             </div>
-            <div className="text-2xl md:text-4xl font-black text-[#3E3B53]">65%</div>
+            <div className="text-2xl md:text-4xl font-black text-[#3E3B53] transition-transform group-hover:scale-110">65%</div>
           </div>
         </div>
 
@@ -173,7 +179,7 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
               <div className="p-5 flex justify-between items-center">
                 <div className="flex-1">
                   <div className="text-[#3E3B53] text-[13px] font-bold uppercase tracking-tight">Birthday Card</div>
-                  <div className="text-gray-400 text-[10px] leading-tight mt-1 italic">all ways jump! with you</div>
+                  <div className="text-gray-400 text-[10px] mt-1 italic">all ways jump! with you</div>
                 </div>
                 <div className="w-14 h-14 rounded-2xl bg-blue-50 overflow-hidden ml-3 shadow-inner"><img src="https://i.ibb.co/Lz0Y8Y0/Card-Ichika-Birthday.png" alt="Card" className="w-full h-full object-cover" /></div>
               </div>
@@ -202,14 +208,14 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
                  <div className="flex-1"><div className="text-[#3E3B53] text-[11px] font-bold">Band practice starts soon</div><div className="text-gray-400 text-[9px] mt-1">Don't forget your guitar!</div></div>
               </div>
 
-              {/* Mini Player - FIXED NÚT CĂN GIỮA TÂM */}
+              {/* Mini Player */}
               <div className="p-6 flex flex-col bg-white">
                 <div className="flex items-start space-x-4 mb-6">
                   <div className={`p-3 rounded-2xl transition-all duration-500 ${isPlaying ? 'bg-[#3E3B53] text-white shadow-lg animate-pulse' : 'bg-[#F3F5FA] text-gray-400'}`}><Radio size={20} /></div>
                   <div className="flex-1 min-w-0"><div className="text-[#3E3B53] text-sm font-bold truncate">303 PM</div><div className="text-gray-400 text-[11px] mt-0.5 truncate">Sharou (しゃろう)</div></div>
                 </div>
                 
-                {/* Khu vực nút điều khiển căn giữa tuyệt đối */}
+                {/* Nút căn giữa tuyệt đối */}
                 <div className="flex items-center justify-center space-x-8 mb-6 w-full">
                   <button onClick={() => setIsLooping(!isLooping)} className={`transition-colors ${isLooping ? 'text-blue-500' : 'text-gray-300'}`}><RotateCcw size={16} /></button>
                   <button className="text-gray-400 hover:text-[#3E3B53]"><SkipBack size={20} fill="currentColor" /></button>
@@ -226,16 +232,21 @@ const DashboardView = ({ isPlaying, progress, currentTime, duration, togglePlay,
                   </div>
                 </div>
               </div>
+
+              {/* Box Outfit Unlocked - Khôi phục lại */}
+              <div className="p-4 md:p-5 flex items-start space-x-4 cursor-pointer hover:bg-gray-50 border-t border-gray-50">
+                 <div className="p-2 bg-[#F3F5FA] rounded-xl"><ImageIcon size={16} className="text-gray-400" /></div>
+                 <div className="flex-1"><div className="text-[#3E3B53] text-[11px] font-bold">New Outfit Unlocked</div><div className="text-gray-400 text-[9px] mt-1">Check it out in the wardrobe!</div></div>
+              </div>
             </div>
 
-            {/* Box Video - Có thể phát video trực tiếp */}
-            <div className="bg-white rounded-[24px] p-4 shadow-sm group border border-transparent hover:border-[#DDE2EF] transition-all">
-              <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-3 bg-black">
-                <video 
-                  ref={videoRef}
-                  className="w-full h-full object-cover cursor-pointer"
-                  src="https://ik.imagekit.io/Nechann/kagura-nana-crying-virtual-youtuber-moewalls-com.mp4?updatedAt=1768730515129" 
-                  onClick={() => videoRef.current.paused ? videoRef.current.play() : videoRef.current.pause()}
+            {/* Box Video đã sửa thành Box Ảnh (Không hover mở rộng) */}
+            <div className="bg-white rounded-[24px] p-4 shadow-sm border border-transparent">
+              <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-3 bg-gray-100">
+                <img 
+                  src="https://i.ibb.co/3ykG2jY/ichika-video-bg.jpg" 
+                  alt="Feature Preview" 
+                  className="w-full h-full object-cover"
                 />
               </div>
               <div className="px-1">
@@ -260,25 +271,16 @@ export default function App() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isLooping, setIsLooping] = useState(false);
-  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(false); // Mặc định ẩn
   const audioRef = useRef(null);
   const timeoutRef = useRef(null);
 
-  const resetHeaderTimeout = useCallback(() => {
+  // Hàm hiện Header 5s khi được gọi
+  const triggerHeader = useCallback(() => {
     setIsHeaderVisible(true);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => setIsHeaderVisible(false), 5000);
   }, []);
-
-  useEffect(() => {
-    const events = ['mousemove', 'scroll', 'touchstart', 'mousedown', 'keydown'];
-    events.forEach(ev => window.addEventListener(ev, resetHeaderTimeout));
-    resetHeaderTimeout();
-    return () => {
-      events.forEach(ev => window.removeEventListener(ev, resetHeaderTimeout));
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [resetHeaderTimeout]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -306,7 +308,6 @@ export default function App() {
     if (isPlaying) audioRef.current.pause();
     else audioRef.current.play().catch(console.error);
     setIsPlaying(!isPlaying);
-    resetHeaderTimeout();
   };
 
   const handleSeek = (percent) => {
@@ -315,15 +316,14 @@ export default function App() {
     audioRef.current.currentTime = newTime;
     setCurrentTime(newTime);
     setProgress(percent);
-    resetHeaderTimeout();
   };
 
   return (
     <div className="min-h-screen bg-[#EEF0F5] font-sans pt-14 selection:bg-[#3E3B53] selection:text-white overflow-x-hidden">
       <audio ref={audioRef} src={MUSIC_URL} preload="auto" />
       <TopNavBar isPlaying={isPlaying} progress={progress} currentTime={currentTime} duration={duration} togglePlay={togglePlay} isVisible={isHeaderVisible} onSeek={handleSeek} />
-      <SideNavBar activeView={activeView} setActiveView={setActiveView} />
-      <main className={`transition-all duration-500 flex justify-center ${isHeaderVisible ? 'mt-0' : '-mt-14'}`}>
+      <SideNavBar activeView={activeView} setActiveView={setActiveView} onTriggerHeader={triggerHeader} />
+      <main className={`transition-all duration-500 flex justify-center`}>
         {activeView === 'home' ? (
           <DashboardView isPlaying={isPlaying} progress={progress} currentTime={currentTime} duration={duration} togglePlay={togglePlay} isLooping={isLooping} setIsLooping={setIsLooping} onSeek={handleSeek} />
         ) : (
@@ -339,4 +339,4 @@ export default function App() {
       `}} />
     </div>
   );
-} 
+            } 
